@@ -1,0 +1,18 @@
+<%- include('partials/header.ejs')%>
+
+<h1>Home</h1>
+<p><%= content%></p>
+<%array.forEach(ele => {%>
+	<div>
+		<h2><%= ele.title %></h2>
+		<p><% if(ele.post.length > 100){ %>
+			<%=  ele.post.slice(0, 100) + '...' %>
+			 <a href="/posts/<%= ele.title %>">Read More</a>
+			<% }else{ %>
+			<%= ele.post %>
+			<% } %>
+		</p>
+	</div>
+<%})%>
+
+<%- include('partials/footer.ejs')%>
