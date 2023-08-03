@@ -37,6 +37,7 @@ Libero nunc consequat interdum varius. Nec feugiat nisl pretium fusce. Tellus in
 Fusce id velit ut tortor pretium. `
 let postArr = []
 
+
 app.get('/', (req, res) => {
 
 
@@ -74,7 +75,7 @@ app.get('/posts/:title', async (req, res) => {
 	// res.status(200).send('Good Job')
 	const title = req.params.title
 	for(let i = 0; i < postArr.length; i++){
-		if(lodash.kebabCase(postArr[i].title) === lodash.kebabCase(title)){
+		if(postArr[i]._id.toString() === title){
 			await res.render('post.ejs', {
 				title: postArr[i].title,
 				post: postArr[i].post
@@ -93,5 +94,6 @@ app.listen(PORT, async err => {
 	else{
 		console.log(`Server running on port ${PORT}!`)
 		postArr = await Blog.find()
+		console.log(postArr[0]._id)
 	}
 })
