@@ -106,3 +106,24 @@ footer{
 	opacity: 1;
 	cursor: pointer;
 }
+#compose-button{
+	position: relative;
+	font-size: 1em;
+	left: 75%;
+	margin: 8px;
+	padding: 8px;
+	display: inline-block;
+	background-color: #0B666A;
+	color: white;
+	border-radius: 5px;
+}
+#compose-button:hover{
+	color: #0B666A;
+	background-color: white;
+}
+.card{
+	padding: 15px 0;
+}
+.card *{
+	margin: 5px;
+}

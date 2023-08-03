@@ -3,7 +3,7 @@
 <h1>Home</h1>
 <p><%= content%></p>
 <%array.forEach(ele => {%>
-	<div>
+	<div class="card">
 		<h2><%= ele.title %></h2>
 		<p><% if(ele.post.length > 100){ %>
 			<%=  ele.post.slice(0, 100) + '...' %>
@@ -14,5 +14,6 @@
 		</p>
 	</div>
 <%})%>
+<a id="compose-button" class="nav" href="/compose">Compose</a>
 
 <%- include('partials/footer.ejs')%>

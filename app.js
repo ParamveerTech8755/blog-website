@@ -3,8 +3,24 @@ const app = express()
 const ejs = require('ejs')
 const bodyParser = require('body-parser')
 const lodash = require('lodash')
+const mongoose = require('mongoose')
 
+const urlDatabase = 'mongodb://127.0.0.1:27017/BlogDB'
 const PORT = 3000
+
+/*Setting up database*/
+
+/*first we need a connection to the database*/
+mongoose.connect(urlDatabase).then(() =>{console.log('Connected to Database Server')}).catch(err => {console.log(err)})
+
+//to make a new schema
+const BlogSchema = new mongoose.Schema({
+	title: String,
+	post: String
+})
+
+const Blog = mongoose.model('Blog', BlogSchema)
+/* Database ready to go*/
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -13,12 +29,17 @@ app.use(bodyParser.urlencoded({extended: true}))
 const homeStartingContent = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut tellus elementum sagittis vitae et. Amet venenatis urna cursus eget nunc scelerisque viverra mauris. Vitae congue mauris rhoncus aenean vel. Vel risus commodo viverra maecenas accumsan lacus. Aliquam sem et tortor consequat id porta nibh. Suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Sed libero enim sed faucibus turpis. Nibh venenatis cras sed felis eget velit. Aliquam etiam erat velit scelerisque in dictum non consectetur. Diam quis enim lobortis scelerisque fermentum dui. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu. Quam lacus suspendisse faucibus interdum posuere lorem ipsum. Nunc faucibus a pellentesque sit amet porttitor eget dolor.
 Libero nunc consequat interdum varius. Nec feugiat nisl pretium fusce. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium. Condimentum lacinia quis vel eros donec ac. Augue lacus viverra vitae congue eu consequat ac felis. Amet consectetur adipiscing elit ut aliquam purus sit. Et netus et malesuada fames ac turpis. Ante in nibh mauris cursus mattis molestie a iaculis at. Turpis massa tincidunt dui ut ornare lectus. Iaculis eu non diam phasellus vestibulum lorem sed. Mus mauris vitae ultricies leo integer malesuada nunc vel risus.
 Fusce id velit ut tortor pretium. `
-
-const aboutContent = "Some dummy text"
-const contactContent = "Some dummy text"
-const postArr = []
+const aboutContent = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut tellus elementum sagittis vitae et. Amet venenatis urna cursus eget nunc scelerisque viverra mauris. Vitae congue mauris rhoncus aenean vel. Vel risus commodo viverra maecenas accumsan lacus. Aliquam sem et tortor consequat id porta nibh. Suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Sed libero enim sed faucibus turpis. Nibh venenatis cras sed felis eget velit. Aliquam etiam erat velit scelerisque in dictum non consectetur. Diam quis enim lobortis scelerisque fermentum dui. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu. Quam lacus suspendisse faucibus interdum posuere lorem ipsum. Nunc faucibus a pellentesque sit amet porttitor eget dolor.
+Libero nunc consequat interdum varius. Nec feugiat nisl pretium fusce. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium. Condimentum lacinia quis vel eros donec ac. Augue lacus viverra vitae congue eu consequat ac felis. Amet consectetur adipiscing elit ut aliquam purus sit. Et netus et malesuada fames ac turpis. Ante in nibh mauris cursus mattis molestie a iaculis at. Turpis massa tincidunt dui ut ornare lectus. Iaculis eu non diam phasellus vestibulum lorem sed. Mus mauris vitae ultricies leo integer malesuada nunc vel risus.
+Fusce id velit ut tortor pretium. `
+const contactContent = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut tellus elementum sagittis vitae et. Amet venenatis urna cursus eget nunc scelerisque viverra mauris. Vitae congue mauris rhoncus aenean vel. Vel risus commodo viverra maecenas accumsan lacus. Aliquam sem et tortor consequat id porta nibh. Suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Sed libero enim sed faucibus turpis. Nibh venenatis cras sed felis eget velit. Aliquam etiam erat velit scelerisque in dictum non consectetur. Diam quis enim lobortis scelerisque fermentum dui. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu. Quam lacus suspendisse faucibus interdum posuere lorem ipsum. Nunc faucibus a pellentesque sit amet porttitor eget dolor.
+Libero nunc consequat interdum varius. Nec feugiat nisl pretium fusce. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium. Condimentum lacinia quis vel eros donec ac. Augue lacus viverra vitae congue eu consequat ac felis. Amet consectetur adipiscing elit ut aliquam purus sit. Et netus et malesuada fames ac turpis. Ante in nibh mauris cursus mattis molestie a iaculis at. Turpis massa tincidunt dui ut ornare lectus. Iaculis eu non diam phasellus vestibulum lorem sed. Mus mauris vitae ultricies leo integer malesuada nunc vel risus.
+Fusce id velit ut tortor pretium. `
+let postArr = []
 
 app.get('/', (req, res) => {
+
+
 	res.render('home.ejs', {
 		content: homeStartingContent,
 		array: postArr
@@ -40,6 +61,10 @@ app.get('/compose', (req, res) => {
 })
 app.post('/compose', (req, res) => {
 	const result = req.body
+	const dataElement = new Blog(result)
+	dataElement.save()
+	
+	// mongoose.connection.close()
 	postArr.push(result)
 	res.redirect('/')
 })
@@ -62,10 +87,11 @@ app.get('/posts/:title', async (req, res) => {
 app.all('*', (req, res) => {
 	res.render('notfound.ejs')
 })
-app.listen(PORT, err => {
+app.listen(PORT, async err => {
 	if(err)
 		console.log(`Error: ${err}`)
 	else{
 		console.log(`Server running on port ${PORT}!`)
+		postArr = await Blog.find()
 	}
 })
